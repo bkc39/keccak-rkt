@@ -1,10 +1,10 @@
 #lang scribble/manual
-@require[@for-label[keccak256
+@require[@for-label[keccak
                     racket/base]]
 
-@title{keccak256}
+@title{keccak}
 @author{bkc}
 
-@defmodule[keccak256]
+@defmodule[keccak]
 
 Package Description Here
