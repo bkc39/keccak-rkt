@@ -7,3 +7,4 @@
 (define version "0.0")
 (define pkg-authors '(bkc))
 (define license '(Apache-2.0 OR MIT))
+(define pre-install-collection "private/install-XKCP-keccak-compact.rkt")
