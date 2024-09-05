@@ -3,7 +3,8 @@
 (require
  ffi/unsafe
  ffi/unsafe/define
- ffi/unsafe/define/conventions)
+ ffi/unsafe/define/conventions
+ openssl/sha1)
 
 (module+ test
   (require rackunit))
@@ -16,18 +17,19 @@
 (define-XKCP-keccak Keccak
   (_fun _uint
         _uint
-        (bs : _bytes)
-        (_uint64 = (bytes-utf-8-length bs))
+        [bs : (_list i _byte)]
+        [_uint64 = (length bs)]
         _byte
-        _bytes
-        _uint64
-        -> _void))
+        [hashed : (_list o _byte n)]
+        [n : _uint64]
+        -> _void
+        -> (apply bytes hashed)))
 
 (module+ main
   (displayln (format "Keccak Hash: ~a"
-                     (Keccak 1088
-                             512
-                             (string->bytes/utf-8 "")
-                             #x06
-                             (string->bytes/utf-8 "")
-                             38))))
+                     (bytes->hex-string
+                      (Keccak 1088
+                              512
+                              (bytes 0 0 0)
+                              #x06
+                              32)))))
