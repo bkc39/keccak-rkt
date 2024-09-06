@@ -1,8 +1,20 @@
 #lang racket/base
 
 (provide
+ ;; racket interface
+ shake128
+ shake256
+ keccak224
+ keccak256
+ keccak384
+ keccak512
+
+ keccak
+
  bytes->hex-string
  hex-string->bytes
+
+ ;; foreign bindings
  Keccak
  FIPS202-SHAKE128
  FIPS202-SHAKE256
