@@ -47,6 +47,18 @@
    (hex-string->bytes
     "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a")))
 
+(define (convert-to-bytes obj [who 'convert-to-bytes])
+  (cond
+    [(bytes? obj)
+     obj]
+    [(string? obj)
+     (string->bytes/utf-8 obj)]
+    [else
+     (error who "string or bytes expected. got: ~a" obj)]))
+
+(define (keccak r c str-or-bytes sfx out-len)
+  (Keccak r c (convert-to-bytes str-or-bytes) sfx out-len))
+
 (define-XKCP-keccak FIPS202-SHAKE128
   (_fun [bs : _bytes]
         [_uint64 = (bytes-length bs)]
@@ -115,18 +127,45 @@
    (FIPS202-SHA3-512 #"")
    (Keccak 576 1024 #"" #x06 64)))
 
-(define (keccak256 obj)
-  (define bytes-to-hash
-    (cond
-      [(string? obj)
-       (string->bytes/utf-8 obj)]
-      [(list? obj)
-       (apply bytes obj)]
-      [(vector? obj)
-       (apply bytes (vector->list obj))]
-      [else
-       (error 'keccak256 "Invalid object: ~a" obj)]))
-  (FIPS202-SHA3-256 bytes-to-hash))
+
+
+(begin-for-syntax
+  (define-syntax-class wrapper-arg
+    #:attributes (decl-stx body-stx)
+    (pattern n:id
+             #:attr decl-stx #'n
+             #:attr body-stx #'n)
+    (pattern (n:id e:expr)
+             #:attr decl-stx #'(n e)
+             #:attr body-stx #'n)))
+
+(define-syntax-parse-rule
+  (define-string-wrapper
+    (wrapper-name:id args*:wrapper-arg ...) (~datum <=) ffi-name:id)
+  (define (wrapper-name str-or-bytes args*.decl-stx ...)
+    (ffi-name (convert-to-bytes str-or-bytes) args*.body-stx ...)))
+
+(define-string-wrapper (shake128 [n 32]) <= FIPS202-SHAKE128)
+
+(module+ test
+  (check-equal?
+   (shake128 #"apple" 32)
+   (FIPS202-SHAKE128 #"apple" 32))
+
+  (check-equal?
+   (shake128 #"apple")
+   (shake128 #"apple" 32))
+
+  (check-equal?
+   (shake128 "apple" 32)
+   (shake128 #"apple" 32)))
+
+(define-string-wrapper (shake256 n) <= FIPS202-SHAKE256)
+
+(define-string-wrapper (keccak224) <= FIPS202-SHA3-224)
+(define-string-wrapper (keccak256) <= FIPS202-SHA3-256)
+(define-string-wrapper (keccak384) <= FIPS202-SHA3-384)
+(define-string-wrapper (keccak512) <= FIPS202-SHA3-512)
 
 (module+ test
   (check-equal?
