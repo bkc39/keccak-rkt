@@ -21,9 +21,9 @@ jobs:
           distribution: full
           variant: ${{ matrix.racket-variant }}
           version: ${{ matrix.racket-version }}
-      - name: Installing keccak256 and its dependencies
-        run: raco pkg install --no-docs --auto --name keccak256
-      - name: Compiling keccak256 and building its docs
-        run: raco setup --check-pkg-deps --unused-pkg-deps keccak256
-      - name: Testing keccak256
-        run: raco test -x -p keccak256
+      - name: Installing keccak and its dependencies
+        run: raco pkg install --no-docs --auto --name keccak
+      - name: Compiling keccak and building its docs
+        run: raco setup --check-pkg-deps --unused-pkg-deps keccak
+      - name: Testing keccak
+        run: raco test -x -p keccak
