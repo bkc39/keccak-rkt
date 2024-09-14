@@ -1,7 +1,7 @@
 #lang info
 (define collection "keccak")
 (define deps '("base" "dynext-lib"))
-(define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
+(define build-deps '("scribble-lib" "racket-doc" "rackunit-lib" "crypto"))
 (define scribblings '(("scribblings/keccak.scrbl" ())))
 (define pkg-desc "Keccak cryptographic hash algorithm.")
 (define version "0.1")

@@ -187,11 +187,3 @@
   (check-equal?
    (shake128 "apple" 32)
    (shake128 #"apple" 32)))
-
-
-
-(require (except-in crypto bytes->hex-string) crypto/libcrypto)
-;; (bytes->hex-string (keccak256 #""))
-;; (bytes->hex-string (digest
-;;                     (get-digest 'sha3-256 libcrypto-factory)
-;;                     #""))
