@@ -1,10 +1,10 @@
 keccak256
 =========
 
-Racket bindings to [XKCP]("https://github.com/XKCP/XKCP")
+Racket bindings to [XKCP](https://github.com/XKCP/XKCP)
 implementation of the `keccak` family of hash functions. These hashes
 should match those used in [Solidity function
-selectors]("https://docs.soliditylang.org/en/develop/abi-spec.html#function-selector").
+selectors](https://docs.soliditylang.org/en/develop/abi-spec.html#function-selector).
 
 __Note:__ These hashes **do not** match those produced by the Racket
 [crypto](https://docs.racket-lang.org/crypto/index.html) library's
