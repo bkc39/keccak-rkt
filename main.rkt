@@ -3,6 +3,7 @@
 (provide
  ;; racket interface
  keccak
+ keccak256
 
  bytes->hex-string
  hex-string->bytes
