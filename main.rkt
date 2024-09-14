@@ -2,13 +2,6 @@
 
 (provide
  ;; racket interface
- shake128
- shake256
- keccak224
- keccak256
- keccak384
- keccak512
-
  keccak
 
  bytes->hex-string
@@ -70,6 +63,30 @@
 
 (define (keccak r c str-or-bytes sfx out-len)
   (Keccak r c (convert-to-bytes str-or-bytes) sfx out-len))
+
+(define (keccak256 str-or-bytes)
+  (Keccak 1088 512 (convert-to-bytes str-or-bytes) #x01 32))
+
+(define (solc-function-selector signature)
+  (bytes->hex-string
+   (subbytes
+    (keccak256 signature)
+    0
+    4)))
+
+(module+ test
+  (check-equal?
+   (solc-function-selector "main()")
+   "dffeadd0")
+  (check-equal?
+   (solc-function-selector "run_example()")
+   "d142d10d")
+  (check-equal?
+   (solc-function-selector "increaseVotePower(uint256,uint256)")
+   "75e02cd9")
+  (check-equal?
+   (solc-function-selector "claimDomainFunds(address,uint256)")
+   "53b9f589"))
 
 (define-XKCP-keccak FIPS202-SHAKE128
   (_fun [bs : _bytes]
@@ -139,8 +156,6 @@
    (FIPS202-SHA3-512 #"")
    (Keccak 576 1024 #"" #x06 64)))
 
-
-
 (begin-for-syntax
   (define-syntax-class wrapper-arg
     #:attributes (decl-stx body-stx)
@@ -172,14 +187,10 @@
    (shake128 "apple" 32)
    (shake128 #"apple" 32)))
 
-(define-string-wrapper (shake256 n) <= FIPS202-SHAKE256)
 
-(define-string-wrapper (keccak224) <= FIPS202-SHA3-224)
-(define-string-wrapper (keccak256) <= FIPS202-SHA3-256)
-(define-string-wrapper (keccak384) <= FIPS202-SHA3-384)
-(define-string-wrapper (keccak512) <= FIPS202-SHA3-512)
 
-(module+ test
-  (check-equal?
-   (keccak256 "")
-   (FIPS202-SHA3-256 #"")))
+(require (except-in crypto bytes->hex-string) crypto/libcrypto)
+;; (bytes->hex-string (keccak256 #""))
+;; (bytes->hex-string (digest
+;;                     (get-digest 'sha3-256 libcrypto-factory)
+;;                     #""))
