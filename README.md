@@ -1,4 +1,4 @@
-keccak256
+keccak-rkt
 =========
 
 Racket bindings to [XKCP](https://github.com/XKCP/XKCP)
